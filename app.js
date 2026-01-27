@@ -35,7 +35,9 @@ app.use("/admin", adminRoutes);
 
 app.use("/users", userRouter);
 app.use("/follows", followRouter);
-
+app.get("/", (req, res) => {
+  res.json("Server Is Start")
+});
 DtabseConnection();
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
