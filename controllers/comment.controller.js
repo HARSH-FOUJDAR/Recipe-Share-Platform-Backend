@@ -1,0 +1,55 @@
+const CommentModel = require("../models/Comment.model");
+const Comment = require("../models/Comment.model");
+exports.addComment = async (req, res) => {
+  try {
+    const { recipeId, text } = req.body;
+    const comment = await CommentModel.create({
+      recipe: recipeId,
+      user: req.user._id,
+      text,
+    });
+    res.json({ message: "Comment add Successfylly", comment });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      message: "Comment not Created",
+    });
+  }
+};
+
+exports.getComment = async (req, res) => {
+  try {
+    const comment = await CommentModel.find({
+      recipe: req.param.recipeId,
+    }).populate("user", "username email");
+    res.json({ count: comment.length, comment });
+  } catch (error) {
+    res.status.json({
+      message: "Server Error",
+    });
+  }
+};
+
+exports.deleteComment = async (req, res) => {
+  try {
+    const comment = await CommentModel.findById(req.params.id);
+    if (!comment) {
+      return res.status(404).json({
+        message: "User not Found",
+      });
+    }
+    if (req.user.role !== "admin" && !comment.user.equals(req.user._id)) {
+      return res.status(403).json({
+        message: "Not authoriged",
+      });
+    }
+    await comment.deleteOne();
+    res.status(200).json({
+      message: "Deleted Successfuly",
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Server error",
+    });
+  }
+};
