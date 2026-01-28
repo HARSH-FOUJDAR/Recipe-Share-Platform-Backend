@@ -17,10 +17,13 @@ const app = express();
 const cors = require("cors");
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: true, // 👈 allow all origins dynamically
     credentials: true,
-  }),
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
 );
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "public")));
@@ -36,7 +39,7 @@ app.use("/admin", adminRoutes);
 app.use("/users", userRouter);
 app.use("/follows", followRouter);
 app.get("/", (req, res) => {
-  res.json("Server Is Start")
+  res.json("Server Is Start");
 });
 DtabseConnection();
 app.listen(PORT, () => {

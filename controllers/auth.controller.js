@@ -41,7 +41,6 @@ exports.Loginpage = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    // ✅ FIXED ADMIN
     if (
       email === process.env.ADMIN_EMAIL &&
       password === process.env.ADMIN_PASSWORD
@@ -62,7 +61,7 @@ exports.Loginpage = async (req, res) => {
       });
     }
 
-    // 🔹 Normal user login
+    //  Normal user login
     const user = await User.findOne({ email });
     if (!user) {
       return res.status(400).json({ message: "Invalid email or password" });

@@ -4,27 +4,31 @@ const RecipeController = require("../controllers/recipe.controller");
 const authenticate = require("../middleware/auth.middleware");
 const authorizeRecipeOwner = require("../middleware/authorizeRecipeOwner");
 
-// CREATE → sirf login required
+// CREATE
 router.post("/", authenticate, RecipeController.createRecipe);
 
-// PUBLIC ROUTES
+// READ
 router.get("/", RecipeController.getAllRecipe);
-router.get("/:id", RecipeController.getRecipeById);
+router.get("/:id", authenticate, RecipeController.getRecipeById);
 
-// UPDATE → login + owner
+// UPDATE
 router.put(
   "/:id",
   authenticate,
   authorizeRecipeOwner,
-  RecipeController.updateById,
+  RecipeController.updateById
 );
 
-// DELETE → login + owner
+// DELETE
 router.delete(
   "/:id",
   authenticate,
   authorizeRecipeOwner,
-  RecipeController.deleteRecipeById ,
+  RecipeController.deleteRecipeById
 );
+
+// LIKE & SHARE
+router.post("/:id/like", authenticate, RecipeController.tooglelike);
+router.post("/:id/share", authenticate, RecipeController.shareRecipe);
 
 module.exports = router;

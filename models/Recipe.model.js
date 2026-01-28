@@ -25,7 +25,13 @@ const RecipeSchema = new mongoose.Schema(
     photos: [{ type: String }],
 
     videoTutorial: { type: String },
-
+    like: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
+    share: { type: Number, default: 0 },
     averageRating: {
       type: Number,
       default: 0,
