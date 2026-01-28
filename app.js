@@ -38,6 +38,7 @@ app.use("/admin", adminRoutes);
 
 app.use("/users", userRouter);
 app.use("/follows", followRouter);
+
 app.get("/", (req, res) => {
   res.json("Server Is Start");
 });

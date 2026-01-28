@@ -107,7 +107,6 @@ exports.updateById = async (req, res) => {
   }
 };
 
-const RecipeModel = require("../models/Recipe.model");
 
 exports.createRecipe = async (req, res) => {
   try {
