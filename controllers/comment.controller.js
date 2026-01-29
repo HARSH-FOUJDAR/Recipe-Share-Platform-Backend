@@ -28,14 +28,15 @@ exports.addComment = async (req, res) => {
     });
   }
 };
-
 exports.getComment = async (req, res) => {
   try {
-    const comment = await CommentModel.find({
-      recipe: req.params.recipeId,
-    }).populate("user", "username");
+    const recipeId = req.params.recipeId; // <-- fix this
+    const comments = await CommentModel.find({ recipe: recipeId }).populate(
+      "user",
+      "username",
+    ); // populate username
 
-    res.json({ count: comment.length, comments: comment });
+    res.json({ comments }); // send as 'comments' array
   } catch (error) {
     console.log(error);
     res.status(500).json({
@@ -43,7 +44,6 @@ exports.getComment = async (req, res) => {
     });
   }
 };
-
 
 exports.deleteComment = async (req, res) => {
   try {
