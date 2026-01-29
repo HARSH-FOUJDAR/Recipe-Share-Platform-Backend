@@ -1,5 +1,5 @@
 const CommentModel = require("../models/Comment.model");
-const mongoose = require('mongoose')
+const mongoose = require("mongoose");
 exports.addComment = async (req, res) => {
   try {
     const { recipeId, text } = req.body;
