@@ -1,6 +1,5 @@
 const MealPlanSchema = require("../models/MealPlan.model");
 
-// Create Plan
 exports.createMealPlan = async (req, res) => {
   try {
     const { date, meals, notes } = req.body;
@@ -30,7 +29,6 @@ exports.createMealPlan = async (req, res) => {
   }
 };
 
-// Get All Plans
 exports.getMyMealplane = async (req, res) => {
   try {
     const mealPlans = await MealPlanSchema.find({ user: req.user._id }).sort({
@@ -42,7 +40,6 @@ exports.getMyMealplane = async (req, res) => {
   }
 };
 
-// Update Plan (Fixed parameter to 'id')
 exports.updateMealPlan = async (req, res) => {
   try {
     const { id } = req.params;
@@ -62,7 +59,6 @@ exports.updateMealPlan = async (req, res) => {
   }
 };
 
-// Delete Plan (Fixed parameter to 'id')
 exports.deletMealplan = async (req, res) => {
   try {
     const { id } = req.params;
