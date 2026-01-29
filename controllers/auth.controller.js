@@ -51,7 +51,6 @@ exports.Loginpage = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-   
     if (email === process.env.ADMIN_EMAIL) {
       const isAdminPass = password === process.env.ADMIN_PASSWORD;
       if (!isAdminPass) {
@@ -93,6 +92,8 @@ exports.Loginpage = async (req, res) => {
         username: user.username,
         email: user.email,
         role: user.role,
+        MobileNum: user.MobileNum,
+        bio: user.bio, 
       },
       token,
     });
@@ -192,7 +193,7 @@ exports.updateProfile = async (req, res) => {
         bio,
         profileImage,
       },
-      { new: true }
+      { new: true },
     ).select("-password");
 
     res.json({
