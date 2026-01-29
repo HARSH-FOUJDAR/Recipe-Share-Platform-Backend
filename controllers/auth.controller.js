@@ -6,24 +6,33 @@ const mongoose = require("mongoose");
 const sendEmail = require("../utils/sendEmail");
 exports.Registerpage = async (req, res) => {
   try {
-    const { username, email, password } = req.body;
+    const { username, email, password, MobileNum, bio, profileImage } =
+      req.body;
 
     if (!username || !email || !password) {
-      return res.status(400).json({ message: "All fields are required" });
+      return res.status(400).json({
+        message: "Username, email and password are required",
+      });
     }
 
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(400).json({ message: "Email already in use" });
     }
+
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const newUser = new User({
       username,
       email,
       password: hashedPassword,
+      MobileNum: MobileNum || "",
+      bio: bio || "",
+      profileImage: profileImage || "",
     });
+
     await newUser.save();
+
     res.status(201).json({
       message: "User registered successfully",
       user: {
@@ -33,6 +42,7 @@ exports.Registerpage = async (req, res) => {
       },
     });
   } catch (error) {
+    console.error(error);
     res.status(500).json({ message: "Server error" });
   }
 };
@@ -41,27 +51,27 @@ exports.Loginpage = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    if (
-      email === process.env.ADMIN_EMAIL &&
-      password === process.env.ADMIN_PASSWORD
-    ) {
+    // 🔐 Admin Login (SAFE)
+    if (email === process.env.ADMIN_EMAIL) {
+      const isAdminPass = password === process.env.ADMIN_PASSWORD;
+      if (!isAdminPass) {
+        return res.status(401).json({ message: "Invalid admin credentials" });
+      }
+
       const token = generateToken({
+        id: "admin",
         role: "admin",
         isAdmin: true,
       });
 
       return res.json({
-        message: "Admin Login Successfully",
-        user: {
-          username: "Admin",
-          email,
-          role: "admin",
-        },
+        message: "Admin login successful",
+        user: { username: "Admin", email, role: "admin" },
         token,
       });
     }
 
-    //  Normal user login
+    // 👤 Normal user
     const user = await User.findOne({ email });
     if (!user) {
       return res.status(400).json({ message: "Invalid email or password" });
@@ -98,24 +108,24 @@ exports.forgotPassword = async (req, res) => {
     const user = await User.findOne({ email });
 
     if (!user) {
-      return res.json({
-        message: "If email exits, reset link sent",
-      });
+      return res.json({ message: "If email exists, reset link sent" });
     }
+
     const resetToken = crypto.randomBytes(32).toString("hex");
+
     user.resetToken = resetToken;
     user.resetTokenExpiry = Date.now() + 15 * 60 * 1000;
     await user.save();
+
     const resetLink = `${process.env.FRONTEND_URL}/reset-password/${resetToken}`;
     await sendEmail(email, resetLink);
-    return res.json({
-      message: "If email exists, reset link has been sent",
-    });
+
+    res.json({ message: "Reset link sent to email" });
   } catch (error) {
-    console.log(error);
-    res.status(500).json({ message: "erro" });
+    res.status(500).json({ message: "Server error" });
   }
 };
+
 exports.resetPassword = async (req, res) => {
   try {
     const { token } = req.params;
@@ -123,34 +133,28 @@ exports.resetPassword = async (req, res) => {
 
     if (!newPassword || newPassword.length < 6) {
       return res.status(400).json({
-        message: "password must be at least 6 cherecter",
+        message: "Password must be at least 6 characters",
       });
     }
+
     const user = await User.findOne({
       resetToken: token,
       resetTokenExpiry: { $gt: Date.now() },
     });
+
     if (!user) {
-      return res.status(400).json({
-        message: "Invelid or Expired reset link",
-      });
+      return res.status(400).json({ message: "Invalid or expired reset link" });
     }
-    //Hash new password
 
     user.password = await bcrypt.hash(newPassword, 10);
-
-    //clear token
-
     user.resetToken = null;
     user.resetTokenExpiry = null;
 
     await user.save();
 
-    res.json({
-      message: "Password reset successfully",
-    });
+    res.json({ message: "Password reset successfully" });
   } catch (error) {
-    res.status(500).json({ message: " Server error" });
+    res.status(500).json({ message: "Server error" });
   }
 };
 
@@ -159,4 +163,44 @@ exports.getMe = (req, res) => {
     message: "User is authenticated",
     user: req.user,
   });
+};
+exports.userprofile = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id).select("-password");
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.json({
+      message: "Profile fetched successfully",
+      user,
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+exports.updateProfile = async (req, res) => {
+  try {
+    const { username, MobileNum, bio, profileImage } = req.body;
+
+    const updatedUser = await User.findByIdAndUpdate(
+      req.user.id,
+      {
+        username,
+        MobileNum,
+        bio,
+        profileImage,
+      },
+      { new: true }
+    ).select("-password");
+
+    res.json({
+      message: "Profile updated successfully",
+      user: updatedUser,
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Server error" });
+  }
 };
