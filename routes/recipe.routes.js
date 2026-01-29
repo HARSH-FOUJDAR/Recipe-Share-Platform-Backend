@@ -7,11 +7,10 @@ const authorizeRecipeOwner = require("../middleware/authorizeRecipeOwner");
 // CREATE → sirf login required
 router.post("/", authenticate, RecipeController.createRecipe);
 
-// PUBLIC ROUTES
+// SAHI ORDER:
+router.get("/myRecipe", authenticate, RecipeController.getMyRecipes); 
 router.get("/", RecipeController.getAllRecipe);
-router.get("/:id", authenticate, RecipeController.getRecipeById);
-
-router.get("/myRecipe", authenticate, RecipeController.getMyRecipes);
+router.get("/:id", authenticate, RecipeController.getRecipeById); 
 
 // UPDATE → login + owner
 router.put(
