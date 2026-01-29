@@ -1,5 +1,5 @@
 const CommentModel = require("../models/Comment.model");
-
+const mongoose = require('mongoose')
 exports.addComment = async (req, res) => {
   try {
     const { recipeId, text } = req.body;
@@ -33,11 +33,13 @@ exports.addComment = async (req, res) => {
 
 exports.getComment = async (req, res) => {
   try {
-    const recipeId = req.params.id; 
-    const comments = await CommentModel.find({ recipe: recipeId })
+    const recipeId = req.params.id;
+
+    const comments = await CommentModel.find({
+      recipe: new mongoose.Types.ObjectId(recipeId),
+    })
       .populate("user", "username")
-      .sort({ createdAt: -1 })
-      .lean();
+      .sort({ createdAt: -1 });
 
     res.json({ comments });
   } catch (error) {
@@ -45,7 +47,6 @@ exports.getComment = async (req, res) => {
     res.status(500).json({ message: "Failed to fetch comments" });
   }
 };
-
 
 exports.deleteComment = async (req, res) => {
   try {
