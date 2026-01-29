@@ -5,6 +5,7 @@ const MealPlanControllers = require('../controllers/mealplan.controller');
 
 router.post("/createmealplan",authenticate,MealPlanControllers.createMealPlan);
 router.get("/mealplan",authenticate,MealPlanControllers.getMyMealplane )
-router.put("/mealplan/:id",authenticate, MealPlanControllers.updateMealPlan);
-router.delete("/mealplan/:id", authenticate,MealPlanControllers.deletMealplan)
+
+router.put("/mealplan/:planId", authenticate, MealPlanControllers.updateMealPlan);
+router.delete("/mealplan/:planId", authenticate, MealPlanControllers.deletMealplan);
 module.exports = router;
