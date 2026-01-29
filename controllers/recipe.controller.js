@@ -167,6 +167,6 @@ exports.getMyRecipes = async (req, res) => {
     res.status(200).json({ recipes: myRecipe });
   } catch (err) {
     console.log(err);
-    res.status(500).json({ message: "Server error" });
+    res.status(500).json({ message: "Server error start" });
   }
 };
