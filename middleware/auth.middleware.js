@@ -14,13 +14,13 @@ const authenticate = async (req, res, next) => {
 
     if (decoded.isAdmin === true) {
       req.user = {
+        _id: decoded.id,
         role: "admin",
         isAdmin: true,
       };
       return next();
     }
 
-   
     if (!decoded.id) {
       return res.status(401).json({ message: "Invalid token payload" });
     }
@@ -38,7 +38,7 @@ const authenticate = async (req, res, next) => {
     next();
   } catch (error) {
     console.log(error);
-    
+
     return res.status(401).json({ message: "Invalid or expired token" });
   }
 };

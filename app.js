@@ -17,11 +17,11 @@ const app = express();
 const cors = require("cors");
 app.use(
   cors({
-    origin: true, // 👈 allow all origins dynamically
+    origin: true,
     credentials: true,
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
-  })
+  }),
 );
 
 app.use(express.json());
