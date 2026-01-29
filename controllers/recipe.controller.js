@@ -157,22 +157,16 @@ exports.toggleLike = async (req, res) => {
 };
 
 exports.getMyRecipes = async (req, res) => {
+  console.log("USER:", req.user);
+
   try {
-    if (!req.user || !req.user._id) {
-      return res.status(401).json({
-        message: "Unauthorized user",
-      });
-    }
-
-    const userId = req.user._id;
-
     const myRecipe = await RecipeModel.find({
-      createdBy: userId,
-    }).sort({ createdAt: -1 });
+      createdBy: req.user._id,
+    });
 
     res.status(200).json({ recipes: myRecipe });
   } catch (err) {
-    console.log("MY RECIPE ERROR:", err);
+    console.log(err);
     res.status(500).json({ message: "Server error" });
   }
 };
