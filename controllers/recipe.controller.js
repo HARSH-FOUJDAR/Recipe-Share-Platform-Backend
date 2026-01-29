@@ -157,7 +157,6 @@ exports.toggleLike = async (req, res) => {
 };
 
 exports.getMyRecipes = async (req, res) => {
-
   try {
     const myRecipe = await RecipeModel.find({
       createdBy: req.user._id,
