@@ -1,9 +1,9 @@
 const MealPlanSchema = require("../models/MealPlan.model");
 
-exports.  createMealPlan = async (req, res) => {
+exports.createMealPlan = async (req, res) => {
   try {
     const { date, meals, notes } = req.body;
-    if (!date || !meals || !meals.breakfast ||! meals.lunch || !meals.dinner) {
+    if (!date || !meals || !meals.breakfast || !meals.lunch || !meals.dinner) {
       return res.status(400).json({
         message: "Dates and all meals required",
       });
@@ -56,7 +56,6 @@ exports.updateMealPlan = async (req, res) => {
     const { planId } = req.params;
     const { meals, notes } = req.body;
 
-    //  find meal plan
     const mealPlan = await MealPlanSchema.findById(planId);
 
     if (!mealPlan) {
@@ -65,14 +64,12 @@ exports.updateMealPlan = async (req, res) => {
       });
     }
 
-    //  ownership check
     if (mealPlan.user.toString() !== req.user._id.toString()) {
       return res.status(403).json({
         message: "You are not allowed to update this plan",
       });
     }
 
-    //  update fields
     if (meals) mealPlan.meals = meals;
     if (notes) mealPlan.notes = notes;
 
@@ -99,7 +96,6 @@ exports.deletMealplan = async (req, res) => {
       });
     }
 
-    // ownership check
     if (mealPlan.user.toString() !== req.user._id.toString()) {
       return res.status(403).json({
         message: "You are not allowed to delete this plan",
