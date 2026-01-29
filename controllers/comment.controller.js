@@ -30,7 +30,7 @@ exports.addComment = async (req, res) => {
   }
 };
 
-exports.getComments = async (req, res) => { // ✅ Fixed name
+exports.getComment = async (req, res) => { // ✅ Fixed name
   try {
     const recipeId = req.params.id; // ✅ Fixed: :id se match
 
