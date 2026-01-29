@@ -156,7 +156,7 @@ exports.toggleLike = async (req, res) => {
   }
 };
 
-exports.getMyRecidsdspes = async (req, res) => {
+exports.getMyRecipes = async (req, res) => {
 
   try {
     const myRecipe = await RecipeModel.find({
