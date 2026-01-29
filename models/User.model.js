@@ -8,7 +8,7 @@ const UserSchema = new mongoose.Schema(
       trim: true,
     },
     MobileNum: {
-      type: Number,
+      type: String,
       require: true,
     },
 
@@ -26,7 +26,7 @@ const UserSchema = new mongoose.Schema(
 
     bio: {
       type: String,
-      default: "",
+      require: true,
     },
 
     profileImage: {
