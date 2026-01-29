@@ -32,7 +32,7 @@ exports.addComment = async (req, res) => {
 exports.getComment = async (req, res) => {
   try {
     const comment = await CommentModel.find({
-      recipe: req.params.recipeId, // use req.params
+      recipe: req.params.recipeId,
     }).populate("user", "username");
 
     res.json({ count: comment.length, comments: comment });
