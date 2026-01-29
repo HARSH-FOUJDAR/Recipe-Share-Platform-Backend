@@ -32,15 +32,18 @@ exports.addComment = async (req, res) => {
 exports.getComment = async (req, res) => {
   try {
     const comment = await CommentModel.find({
-      recipe: req.param.recipeId,
-    }).populate("user", "username email");
-    res.json({ count: comment.length, comment });
+      recipe: req.params.recipeId, // use req.params
+    }).populate("user", "username");
+
+    res.json({ count: comment.length, comments: comment });
   } catch (error) {
-    res.status.json({
+    console.log(error);
+    res.status(500).json({
       message: "Server Error",
     });
   }
 };
+
 
 exports.deleteComment = async (req, res) => {
   try {
