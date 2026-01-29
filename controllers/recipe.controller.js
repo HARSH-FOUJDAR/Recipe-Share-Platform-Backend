@@ -155,3 +155,20 @@ exports.toggleLike = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+
+exports.getMyRecipes = async (req, res) => {
+  try {
+    const userId = req.user._id;
+    const myRecipe = await RecipeModel.find({
+      createdBy: userId,
+    }).sort({ createdAt: -1 });
+    res.status(200).json({
+      recipes: myRecipe,
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({
+      message: "Server error",
+    });
+  }
+};
