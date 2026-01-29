@@ -158,19 +158,21 @@ exports.toggleLike = async (req, res) => {
 
 exports.getMyRecipes = async (req, res) => {
   try {
+    if (!req.user || !req.user._id) {
+      return res.status(401).json({
+        message: "Unauthorized user",
+      });
+    }
+
     const userId = req.user._id;
 
     const myRecipe = await RecipeModel.find({
       createdBy: userId,
     }).sort({ createdAt: -1 });
 
-    res.status(200).json({
-      recipes: myRecipe,
-    });
+    res.status(200).json({ recipes: myRecipe });
   } catch (err) {
-    console.log(err);
-    res.status(500).json({
-      message: "Server error",
-    });
+    console.log("MY RECIPE ERROR:", err);
+    res.status(500).json({ message: "Server error" });
   }
 };
