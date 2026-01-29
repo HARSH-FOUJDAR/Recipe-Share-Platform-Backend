@@ -4,10 +4,9 @@ exports.addComment = async (req, res) => {
   try {
     const { recipeId, text } = req.body;
 
-    // ✅ Validation
     if (!recipeId || !text || text.trim().length < 3) {
       return res.status(400).json({
-        message: "Recipe ID and comment (min 3 chars) required"
+        message: "Recipe ID and comment (min 3 chars) required",
       });
     }
 
@@ -17,8 +16,10 @@ exports.addComment = async (req, res) => {
       text: text.trim(),
     });
 
-    const populatedComment = await CommentModel.findById(comment._id)
-      .populate("user", "username");
+    const populatedComment = await CommentModel.findById(comment._id).populate(
+      "user",
+      "username",
+    );
 
     res.status(201).json({
       message: "Comment added successfully",
@@ -30,14 +31,13 @@ exports.addComment = async (req, res) => {
   }
 };
 
-exports.getComment = async (req, res) => { // ✅ Fixed name
+exports.getComment = async (req, res) => {
   try {
-    const recipeId = req.params.id; // ✅ Fixed: :id se match
-
+    const recipeId = req.params.id; 
     const comments = await CommentModel.find({ recipe: recipeId })
       .populate("user", "username")
-      .sort({ createdAt: -1 }) // ✅ Latest first
-      .lean(); // ✅ Performance
+      .sort({ createdAt: -1 })
+      .lean();
 
     res.json({ comments });
   } catch (error) {
@@ -46,16 +46,16 @@ exports.getComment = async (req, res) => { // ✅ Fixed name
   }
 };
 
+
 exports.deleteComment = async (req, res) => {
   try {
     const comment = await CommentModel.findById(req.params.id);
     if (!comment) {
       return res.status(404).json({
-        message: "Comment not found", // ✅ Fixed message
+        message: "Comment not found",
       });
     }
 
-    // ✅ Authorization check
     if (req.user.role !== "admin" && !comment.user.equals(req.user._id)) {
       return res.status(403).json({
         message: "Unauthorized - only author or admin can delete",
@@ -63,7 +63,7 @@ exports.deleteComment = async (req, res) => {
     }
 
     await CommentModel.findByIdAndDelete(req.params.id);
-    res.json({ // ✅ Consistent response
+    res.json({
       message: "Comment deleted successfully",
     });
   } catch (error) {
