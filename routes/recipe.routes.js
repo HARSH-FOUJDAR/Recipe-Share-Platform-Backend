@@ -11,7 +11,7 @@ router.post("/", authenticate, RecipeController.createRecipe);
 router.get("/", RecipeController.getAllRecipe);
 router.get("/:id",authenticate, RecipeController.getRecipeById);
 
-router.get("/myRecipe", authenticate, getMyRecipes);
+router.get("/myRecipe", authenticate, RecipeController.getMyRecipes);
 
 // UPDATE → login + owner
 router.put(
