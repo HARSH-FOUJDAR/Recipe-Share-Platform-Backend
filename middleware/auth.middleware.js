@@ -12,7 +12,6 @@ const authenticate = async (req, res, next) => {
     const token = authHeader.split(" ")[1];
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-    // ✅ ADMIN → NO DB QUERY
     if (decoded.isAdmin === true) {
       req.user = {
         role: "admin",
@@ -21,7 +20,7 @@ const authenticate = async (req, res, next) => {
       return next();
     }
 
-    // ✅ NORMAL USER → DB QUERY
+   
     if (!decoded.id) {
       return res.status(401).json({ message: "Invalid token payload" });
     }

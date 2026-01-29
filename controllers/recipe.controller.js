@@ -106,37 +106,7 @@ exports.updateById = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
-// TOGGLE LIKE
-exports.toggleLike = async (req, res) => {
-  const { id } = req.params;
-  const userId = req.user._id;
 
-  try {
-    const recipe = await RecipeModel.findById(id);
-    if (!recipe) {
-      return res.status(404).json({ message: "Recipe not found" });
-    }
-
-    const index = recipe.like.indexOf(userId);
-
-    if (index === -1) {
-      recipe.like.push(userId);
-    } else {
-      recipe.like.splice(index, 1);
-    }
-
-    await recipe.save();
-
-    res.json({
-      likeCount: recipe.like.length,
-      liked: index === -1,
-    });
-  } catch (error) {
-    res.status(500).json({ message: "Server error" });
-  }
-};
-
-// SHARE RECIPE
 exports.shareRecipe = async (req, res) => {
   const { id } = req.params;
 
@@ -157,11 +127,9 @@ exports.shareRecipe = async (req, res) => {
   }
 };
 
-
-// TOGGLE LIKE
 exports.toggleLike = async (req, res) => {
   const { id } = req.params;
-  const userId = req.user._id;
+  const userId = req.user._id.toString();
 
   try {
     const recipe = await RecipeModel.findById(id);
@@ -169,7 +137,7 @@ exports.toggleLike = async (req, res) => {
       return res.status(404).json({ message: "Recipe not found" });
     }
 
-    const index = recipe.like.indexOf(userId);
+    const index = recipe.like.findIndex((uid) => uid.toString() === userId);
 
     if (index === -1) {
       recipe.like.push(userId);
@@ -182,27 +150,6 @@ exports.toggleLike = async (req, res) => {
     res.json({
       likeCount: recipe.like.length,
       liked: index === -1,
-    });
-  } catch (error) {
-    res.status(500).json({ message: "Server error" });
-  }
-};
-
-// SHARE RECIPE
-exports.shareRecipe = async (req, res) => {
-  const { id } = req.params;
-
-  try {
-    const recipe = await RecipeModel.findById(id);
-    if (!recipe) {
-      return res.status(404).json({ message: "Recipe not found" });
-    }
-
-    recipe.share += 1;
-    await recipe.save();
-
-    res.json({
-      shareCount: recipe.share,
     });
   } catch (error) {
     res.status(500).json({ message: "Server error" });
