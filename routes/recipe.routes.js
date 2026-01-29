@@ -9,7 +9,7 @@ router.post("/", authenticate, RecipeController.createRecipe);
 
 // PUBLIC ROUTES
 router.get("/", RecipeController.getAllRecipe);
-router.get("/:id",authenticate, RecipeController.getRecipeById);
+router.get("/:id", authenticate, RecipeController.getRecipeById);
 
 router.get("/myRecipe", authenticate, RecipeController.getMyRecipes);
 
@@ -26,7 +26,7 @@ router.delete(
   "/:id",
   authenticate,
   authorizeRecipeOwner,
-  RecipeController.deleteRecipeById ,
+  RecipeController.deleteRecipeById,
 );
 // LIKE & SHARE
 router.post("/:id/like", authenticate, RecipeController.toggleLike);

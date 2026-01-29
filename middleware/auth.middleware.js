@@ -12,22 +12,33 @@ const authenticate = async (req, res, next) => {
     const token = authHeader.split(" ")[1];
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-    // ✅ id OR _id dono handle karo
-    const userId = decoded.id || decoded._id;
+    if (decoded.isAdmin === true) {
+      const adminUser = await UserModel.findById(decoded.id);
+      if (!adminUser) {
+        return res.status(404).json({ message: "Admin not found" });
+      }
+      req.user = adminUser;
+      return next();
+    }
 
-    if (!userId) {
+    if (!decoded.id) {
       return res.status(401).json({ message: "Invalid token payload" });
     }
 
-    const user = await UserModel.findById(userId);
+    const user = await UserModel.findById(decoded.id);
     if (!user) {
       return res.status(404).json({ message: "User not found" });
+    }
+
+    if (user.isBlocked) {
+      return res.status(403).json({ message: "User is blocked" });
     }
 
     req.user = user;
     next();
   } catch (error) {
-    console.log("AUTH ERROR:", error);
+    console.log(error);
+
     return res.status(401).json({ message: "Invalid or expired token" });
   }
 };
