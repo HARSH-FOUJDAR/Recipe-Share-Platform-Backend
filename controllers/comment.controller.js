@@ -1,47 +1,48 @@
 const CommentModel = require("../models/Comment.model");
+
 exports.addComment = async (req, res) => {
   try {
     const { recipeId, text } = req.body;
 
-    //  Comment create karo
+    // ✅ Validation
+    if (!recipeId || !text || text.trim().length < 3) {
+      return res.status(400).json({
+        message: "Recipe ID and comment (min 3 chars) required"
+      });
+    }
+
     const comment = await CommentModel.create({
       recipe: recipeId,
       user: req.user._id,
-      text,
+      text: text.trim(),
     });
 
-    // Populate user data
-    const populatedComment = await CommentModel.findById(comment._id).populate(
-      "user",
-      "username",
-    );
+    const populatedComment = await CommentModel.findById(comment._id)
+      .populate("user", "username");
 
-    // Send response
-    res.json({
+    res.status(201).json({
       message: "Comment added successfully",
       comment: populatedComment,
     });
   } catch (error) {
-    console.log(error);
-    res.status(500).json({
-      message: "Comment not created",
-    });
+    console.error("Add comment error:", error);
+    res.status(500).json({ message: "Failed to add comment" });
   }
 };
-exports.getComment = async (req, res) => {
-  try {
-    const recipeId = req.params.recipeId; // <-- fix this
-    const comments = await CommentModel.find({ recipe: recipeId }).populate(
-      "user",
-      "username",
-    ); // populate username
 
-    res.json({ comments }); // send as 'comments' array
+exports.getComments = async (req, res) => { // ✅ Fixed name
+  try {
+    const recipeId = req.params.id; // ✅ Fixed: :id se match
+
+    const comments = await CommentModel.find({ recipe: recipeId })
+      .populate("user", "username")
+      .sort({ createdAt: -1 }) // ✅ Latest first
+      .lean(); // ✅ Performance
+
+    res.json({ comments });
   } catch (error) {
-    console.log(error);
-    res.status(500).json({
-      message: "Server Error",
-    });
+    console.error("Get comments error:", error);
+    res.status(500).json({ message: "Failed to fetch comments" });
   }
 };
 
@@ -50,21 +51,23 @@ exports.deleteComment = async (req, res) => {
     const comment = await CommentModel.findById(req.params.id);
     if (!comment) {
       return res.status(404).json({
-        message: "User not Found",
+        message: "Comment not found", // ✅ Fixed message
       });
     }
+
+    // ✅ Authorization check
     if (req.user.role !== "admin" && !comment.user.equals(req.user._id)) {
       return res.status(403).json({
-        message: "Not authoriged",
+        message: "Unauthorized - only author or admin can delete",
       });
     }
-    await comment.deleteOne();
-    res.status(200).json({
-      message: "Deleted Successfuly",
+
+    await CommentModel.findByIdAndDelete(req.params.id);
+    res.json({ // ✅ Consistent response
+      message: "Comment deleted successfully",
     });
   } catch (error) {
-    res.status(500).json({
-      message: "Server error",
-    });
+    console.error("Delete comment error:", error);
+    res.status(500).json({ message: "Server error" });
   }
 };
