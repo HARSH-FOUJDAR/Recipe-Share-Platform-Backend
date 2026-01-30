@@ -1,7 +1,10 @@
 const express = require("express");
 const path = require("path");
-const DtabseConnection = require("./config/db");
 const dotenv = require("dotenv");
+const cors = require("cors");
+
+const DtabseConnection = require("./config/db");
+
 dotenv.config();
 
 const AuthRouter = require("./routes/auth.routes");
@@ -14,7 +17,7 @@ const userRouter = require("./routes/user.routes");
 const followRouter = require("./routes/follow.routes");
 
 const app = express();
-const cors = require("cors");
+
 app.use(
   cors({
     origin: true,
@@ -27,7 +30,6 @@ app.use(
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "public")));
-const PORT = process.env.PORT || 3000;
 
 app.use("/auth", AuthRouter);
 app.use("/recipes", RecipeRouter);
@@ -35,14 +37,13 @@ app.use("/comments", commentRouter);
 app.use("/meals", MealRouter);
 app.use("/ratings", ratingRouter);
 app.use("/admin", adminRoutes);
-
 app.use("/users", userRouter);
 app.use("/follows", followRouter);
 
 app.get("/", (req, res) => {
-  res.json("Server Is Start");
+  res.json("Server Is Running 🚀");
 });
+
 DtabseConnection();
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
+
+module.exports = app;
