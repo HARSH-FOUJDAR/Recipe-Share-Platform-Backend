@@ -7,31 +7,46 @@ const sendEmail = require("../utils/sendEmail");
 
 exports.Registerpage = async (req, res) => {
   try {
-    const updates = {
-      username: req.body.username,
-      MobileNum: req.body.MobileNum,
-      bio: req.body.bio,
-    };
+    const { username, email, password, MobileNum, bio } = req.body;
 
-    if (req.file) {
-      updates.profileImage = req.file.path; // cloudinary URL
+    if (!username || !email || !password) {
+      return res.status(400).json({
+        message: "Username, email and password are required",
+      });
     }
 
-    const updatedUser = await User.findByIdAndUpdate(
-      req.user.id,
-      updates,
-      { new: true }
-    ).select("-password");
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({ message: "Email already exists" });
+    }
 
-    res.json({
-      message: "Profile updated successfully",
-      user: updatedUser,
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const newUser = new User({
+      username,
+      email,
+      password: hashedPassword,
+      MobileNum,
+      bio,
+      profileImage: req.file ? req.file.path : "",
+    });
+
+    await newUser.save();
+
+    res.status(201).json({
+      message: "User registered successfully",
+      user: {
+        _id: newUser._id,
+        username: newUser.username,
+        email: newUser.email,
+        profileImage: newUser.profileImage,
+      },
     });
   } catch (error) {
+    console.error(error);
     res.status(500).json({ message: "Server error" });
   }
 };
-
 
 exports.Loginpage = async (req, res) => {
   try {
@@ -79,7 +94,7 @@ exports.Loginpage = async (req, res) => {
         email: user.email,
         role: user.role,
         MobileNum: user.MobileNum,
-        bio: user.bio, 
+        bio: user.bio,
       },
       token,
     });
@@ -150,6 +165,7 @@ exports.getMe = (req, res) => {
     user: req.user,
   });
 };
+
 exports.userprofile = async (req, res) => {
   try {
     const user = await User.findById(req.user.id).select("-password");
@@ -169,17 +185,20 @@ exports.userprofile = async (req, res) => {
 
 exports.updateProfile = async (req, res) => {
   try {
-    const { username, MobileNum, bio, profileImage } = req.body;
+    const updates = {
+      username: req.body.username,
+      MobileNum: req.body.MobileNum,
+      bio: req.body.bio,
+    };
+
+    if (req.file) {
+      updates.profileImage = req.file.path;
+    }
 
     const updatedUser = await User.findByIdAndUpdate(
       req.user.id,
-      {
-        username,
-        MobileNum,
-        bio,
-        profileImage,
-      },
-      { new: true },
+      updates,
+      { new: true }
     ).select("-password");
 
     res.json({
@@ -187,6 +206,8 @@ exports.updateProfile = async (req, res) => {
       user: updatedUser,
     });
   } catch (error) {
+    console.error(error);
     res.status(500).json({ message: "Server error" });
   }
 };
+
