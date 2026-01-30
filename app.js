@@ -15,7 +15,6 @@ const followRouter = require("./routes/follow.routes");
 
 const app = express();
 const cors = require("cors");
-const connectDB = require("./config/db");
 app.use(
   cors({
     origin: true,
