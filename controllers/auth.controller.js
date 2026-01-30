@@ -7,8 +7,7 @@ const sendEmail = require("../utils/sendEmail");
 
 exports.Registerpage = async (req, res) => {
   try {
-    const { username, email, password, MobileNum, bio } =
-      req.body;
+    const { username, email, password, MobileNum, bio } = req.body;
 
     if (!username || !email || !password) {
       return res.status(400).json({
