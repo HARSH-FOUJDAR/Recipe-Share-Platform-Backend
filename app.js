@@ -3,7 +3,7 @@ const path = require("path");
 const dotenv = require("dotenv");
 const cors = require("cors");
 
-const DtabseConnection = require("./config/db");
+const Databse = require("./config/db");
 
 dotenv.config();
 
@@ -44,6 +44,6 @@ app.get("/", (req, res) => {
   res.json("Server Is Running ");
 });
 
-DtabseConnection();
+Databse();
 
 module.exports = app;
