@@ -6,8 +6,7 @@ const mongoose = require("mongoose");
 const sendEmail = require("../utils/sendEmail");
 exports.Registerpage = async (req, res) => {
   try {
-    const { username, email, password, MobileNum, bio, profileImage } =
-      req.body;
+    const { username, email, password, MobileNum, bio } = req.body;
 
     if (!username || !email || !password) {
       return res.status(400).json({
@@ -28,7 +27,7 @@ exports.Registerpage = async (req, res) => {
       password: hashedPassword,
       MobileNum: MobileNum || "",
       bio: bio || "",
-      profileImage: profileImage || "",
+      profileImage: req.file ? req.file.path : "",
     });
 
     await newUser.save();
@@ -39,6 +38,7 @@ exports.Registerpage = async (req, res) => {
         _id: newUser._id,
         username: newUser.username,
         email: newUser.email,
+        profileImage: newUser.profileImage,
       },
     });
   } catch (error) {
@@ -46,6 +46,7 @@ exports.Registerpage = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+
 
 exports.Loginpage = async (req, res) => {
   try {
