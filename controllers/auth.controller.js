@@ -60,6 +60,7 @@ exports.Loginpage = async (req, res) => {
         role: "admin",
         isAdmin: true,
       });
+      console.log("Generated token:", token);
 
       return res.json({
         message: "Admin login successful",
