@@ -4,45 +4,30 @@ const generateToken = require("../utils/jwt");
 const crypto = require("crypto");
 const mongoose = require("mongoose");
 const sendEmail = require("../utils/sendEmail");
+
 exports.Registerpage = async (req, res) => {
   try {
-    const { username, email, password, MobileNum, bio } = req.body;
+    const updates = {
+      username: req.body.username,
+      MobileNum: req.body.MobileNum,
+      bio: req.body.bio,
+    };
 
-    if (!username || !email || !password) {
-      return res.status(400).json({
-        message: "Username, email and password are required",
-      });
+    if (req.file) {
+      updates.profileImage = req.file.path; // cloudinary URL
     }
 
-    const existingUser = await User.findOne({ email });
-    if (existingUser) {
-      return res.status(400).json({ message: "Email already in use" });
-    }
+    const updatedUser = await User.findByIdAndUpdate(
+      req.user.id,
+      updates,
+      { new: true }
+    ).select("-password");
 
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    const newUser = new User({
-      username,
-      email,
-      password: hashedPassword,
-      MobileNum: MobileNum || "",
-      bio: bio || "",
-      profileImage: req.file ? req.file.path : "",
-    });
-
-    await newUser.save();
-
-    res.status(201).json({
-      message: "User registered successfully",
-      user: {
-        _id: newUser._id,
-        username: newUser.username,
-        email: newUser.email,
-        profileImage: newUser.profileImage,
-      },
+    res.json({
+      message: "Profile updated successfully",
+      user: updatedUser,
     });
   } catch (error) {
-    console.error(error);
     res.status(500).json({ message: "Server error" });
   }
 };
