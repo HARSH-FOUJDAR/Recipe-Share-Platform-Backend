@@ -182,23 +182,20 @@ exports.userprofile = async (req, res) => {
 
 exports.updateProfile = async (req, res) => {
   try {
-    const updates = {
-      username: req.body.username,
-      MobileNum: req.body.MobileNum,
-      bio: req.body.bio,
-    };
+    console.log("FILE 👉", req.file); // DEBUG
 
-    if (req.file) {
-      updates.profileImage = req.file.path;
+    if (!req.file) {
+      return res.status(400).json({ message: "No file uploaded" });
     }
 
-    const updatedUser = await User.findByIdAndUpdate(req.user.id, updates, {
-      new: true,
-    }).select("-password");
+    const user = await User.findById(req.user.id);
+
+    user.avatar = `/uploads/avatars/${req.file.filename}`;
+    await user.save();
 
     res.json({
-      message: "Profile updated successfully",
-      user: updatedUser,
+      message: "Avatar uploaded successfully",
+      avatar: user.avatar,
     });
   } catch (error) {
     console.error(error);
