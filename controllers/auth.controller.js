@@ -195,11 +195,9 @@ exports.updateProfile = async (req, res) => {
       updates.profileImage = req.file.path;
     }
 
-    const updatedUser = await User.findByIdAndUpdate(
-      req.user.id,
-      updates,
-      { new: true }
-    ).select("-password");
+    const updatedUser = await User.findByIdAndUpdate(req.user.id, updates, {
+      new: true,
+    }).select("-password");
 
     res.json({
       message: "Profile updated successfully",
@@ -210,4 +208,3 @@ exports.updateProfile = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
-
