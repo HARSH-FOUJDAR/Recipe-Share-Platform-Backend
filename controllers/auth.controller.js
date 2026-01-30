@@ -7,7 +7,8 @@ const sendEmail = require("../utils/sendEmail");
 
 exports.Registerpage = async (req, res) => {
   try {
-    const { username, email, password, MobileNum, bio } = req.body;
+    const { username, email, password, MobileNum, bio } =
+      req.body;
 
     if (!username || !email || !password) {
       return res.status(400).json({
@@ -17,7 +18,7 @@ exports.Registerpage = async (req, res) => {
 
     const existingUser = await User.findOne({ email });
     if (existingUser) {
-      return res.status(400).json({ message: "Email already exists" });
+      return res.status(400).json({ message: "Email already in use" });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -26,9 +27,8 @@ exports.Registerpage = async (req, res) => {
       username,
       email,
       password: hashedPassword,
-      MobileNum,
-      bio,
-      profileImage: req.file ? req.file.path : "",
+      MobileNum: MobileNum || "",
+      bio: bio || "",
     });
 
     await newUser.save();
@@ -39,7 +39,6 @@ exports.Registerpage = async (req, res) => {
         _id: newUser._id,
         username: newUser.username,
         email: newUser.email,
-        profileImage: newUser.profileImage,
       },
     });
   } catch (error) {
@@ -47,7 +46,6 @@ exports.Registerpage = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
-
 exports.Loginpage = async (req, res) => {
   try {
     const { email, password } = req.body;
