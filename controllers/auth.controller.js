@@ -182,20 +182,23 @@ exports.userprofile = async (req, res) => {
 
 exports.updateProfile = async (req, res) => {
   try {
-    console.log("FILE 👉", req.file); // DEBUG
+    console.log("FILE:", req.file);
 
     if (!req.file) {
       return res.status(400).json({ message: "No file uploaded" });
     }
 
     const user = await User.findById(req.user.id);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
 
-    user.avatar = `/uploads/avatars/${req.file.filename}`;
+    user.profileImage = `/uploads/avatars/${req.file.filename}`;
     await user.save();
 
     res.json({
-      message: "Avatar uploaded successfully",
-      avatar: user.avatar,
+      message: "Profile image uploaded successfully",
+      profileImage: user.profileImage,
     });
   } catch (error) {
     console.error(error);
