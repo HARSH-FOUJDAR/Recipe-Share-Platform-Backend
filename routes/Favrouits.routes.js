@@ -5,3 +5,6 @@ const autonticate = require("../middleware/auth.middleware");
 
 router.post("/favrouits", autonticate, FavrouitsControllesrs.toggleFavrouits);
 router.get("/", autonticate, FavrouitsControllesrs.getFavrouits);
+
+
+module.exports = router;

@@ -14,7 +14,7 @@ const ratingRouter = require("./routes/rating.routes");
 const adminRoutes = require("./routes/admin.routes");
 const userRouter = require("./routes/user.routes");
 const followRouter = require("./routes/follow.routes");
-const Favrouits = require("./routes/Favrouits.routes")
+const favrouits = require("./routes/Favrouits.routes")
 const app = express();
 
 app.use(
@@ -39,7 +39,7 @@ app.use("/ratings", ratingRouter);
 app.use("/admin", adminRoutes);
 app.use("/users", userRouter);
 app.use("/follows", followRouter);
-app.use("/Fav", Favrouits)
+app.use("/fav", favrouits)
 
 app.get("/", (req, res) => {
   res.json("Server Is Running ");
