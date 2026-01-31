@@ -128,31 +128,41 @@ exports.shareRecipe = async (req, res) => {
 };
 
 exports.toggleLike = async (req, res) => {
-  const { id } = req.params;
-  const userId = req.user._id.toString();
-
   try {
+    const { id } = req.params;
+    const userId = req.user._id; // ❗ ObjectId ही रखो
+
     const recipe = await RecipeModel.findById(id);
     if (!recipe) {
       return res.status(404).json({ message: "Recipe not found" });
     }
 
-    const index = recipe.like.findIndex((uid) => uid.toString() === userId);
+    if (!Array.isArray(recipe.like)) {
+      recipe.like = [];
+    }
 
-    if (index === -1) {
-      recipe.like.push(userId);
+    const alreadyLiked = recipe.like.some(
+      (uid) => uid.toString() === userId.toString(),
+    );
+
+    if (alreadyLiked) {
+      recipe.like = recipe.like.filter(
+        (uid) => uid.toString() !== userId.toString(),
+      );
     } else {
-      recipe.like.splice(index, 1);
+      recipe.like.push(userId);
     }
 
     await recipe.save();
 
-    res.json({
+    return res.status(200).json({
+      success: true,
+      liked: !alreadyLiked,
       likeCount: recipe.like.length,
-      liked: index === -1,
     });
   } catch (error) {
-    res.status(500).json({ message: "Server error" });
+    console.error("Toggle Like Error:", error.message);
+    return res.status(500).json({ message: "Server error" });
   }
 };
 
