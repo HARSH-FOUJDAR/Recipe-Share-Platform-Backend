@@ -109,7 +109,6 @@ exports.updateById = async (req, res) => {
 
 exports.shareRecipe = async (req, res) => {
   const { id } = req.params;
-
   try {
     const recipe = await RecipeModel.findById(id);
     if (!recipe) {
@@ -128,41 +127,31 @@ exports.shareRecipe = async (req, res) => {
 };
 
 exports.toggleLike = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const userId = req.user._id; // ❗ ObjectId ही रखो
+  const { id } = req.params;
+  const userId = req.user._id.toString();
 
+  try {
     const recipe = await RecipeModel.findById(id);
     if (!recipe) {
       return res.status(404).json({ message: "Recipe not found" });
     }
 
-    if (!Array.isArray(recipe.like)) {
-      recipe.like = [];
-    }
+    const index = recipe.like.findIndex((uid) => uid.toString() === userId);
 
-    const alreadyLiked = recipe.like.some(
-      (uid) => uid.toString() === userId.toString(),
-    );
-
-    if (alreadyLiked) {
-      recipe.like = recipe.like.filter(
-        (uid) => uid.toString() !== userId.toString(),
-      );
-    } else {
+    if (index === -1) {
       recipe.like.push(userId);
+    } else {
+      recipe.like.splice(index, 1);
     }
 
     await recipe.save();
 
-    return res.status(200).json({
-      success: true,
-      liked: !alreadyLiked,
+    res.json({
       likeCount: recipe.like.length,
+      liked: index === -1,
     });
   } catch (error) {
-    console.error("Toggle Like Error:", error.message);
-    return res.status(500).json({ message: "Server error" });
+    res.status(500).json({ message: "Server error" });
   }
 };
 
