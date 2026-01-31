@@ -55,14 +55,14 @@ exports.unfollowUser = async (req, res) => {
   }
 };
 
-//get Folowers of a user
 
-exports.getFollowers = async (req,res) => {
+
+exports.getFollowers = async (req, res) => {
   try {
     const followers = await FollowModel.find({ following: req.params.userId })
-    .populate("follower", "username email")
+      .populate("follower", "username email")
       .sort({ createdAt: -1 });
-       res.status(200).json({
+    res.status(200).json({
       count: followers.length,
       followers,
     });
@@ -74,7 +74,7 @@ exports.getFollowers = async (req,res) => {
 exports.getFollowing = async (req, res) => {
   try {
     const following = await FollowModel.find({ follower: req.params.userId })
-   .populate("following", "username email")   
+      .populate("following", "username email")
       .sort({ createdAt: -1 });
     res.status(200).json({ count: following.length, following });
   } catch (error) {
