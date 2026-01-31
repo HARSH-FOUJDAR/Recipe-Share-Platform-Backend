@@ -21,6 +21,12 @@ const RecipeSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
+    category: {
+      type: String,
+      required:true,
+      enum:["BreakFast", "Lunch", "Dinner", "Desert", "Quick Snaks"],
+      default:"BreakFast"
+    },
 
     photos: [{ type: String }],
 

@@ -11,6 +11,7 @@ exports.createRecipe = async (req, res) => {
       servings,
       photos,
       videoTutorial,
+      category
     } = req.body;
 
     if (
@@ -32,6 +33,7 @@ exports.createRecipe = async (req, res) => {
       photos,
       servings,
       videoTutorial,
+      category,
       createdBy: req.user._id,
     });
 
