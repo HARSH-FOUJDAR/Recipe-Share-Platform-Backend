@@ -35,14 +35,25 @@ exports.getFavrouits = async (req, res) => {
     const userId = req.user.id;
     const favrouits = await FavoriteModel.find({
       user: userId,
-    }).populate("recipe"); 
+    }).populate("recipe");
 
     res.status(200).json({
-      favorites: favrouits.map(f => f.recipe), 
+      favorites: favrouits.map((f) => f.recipe),
       message: "Favorites fetched successfully",
     });
   } catch (err) {
     console.error("Server error", err);
     res.status(500).json({ message: "Server error" });
+  }
+};
+
+exports.DeleteFav = async (req, res) => {
+  try {
+    await req.favorites.deleteOne();
+    res.json({ message: "Recipe deletd SuccessFully" });
+  } catch (err) {
+    res.status(500).json({
+      message: "Server error",
+    });
   }
 };
