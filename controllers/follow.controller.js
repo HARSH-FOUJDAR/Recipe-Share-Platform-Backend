@@ -55,8 +55,6 @@ exports.unfollowUser = async (req, res) => {
   }
 };
 
-
-
 exports.getFollowers = async (req, res) => {
   try {
     const followers = await FollowModel.find({ following: req.params.userId })
