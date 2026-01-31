@@ -23,11 +23,10 @@ const RecipeSchema = new mongoose.Schema(
     },
     category: {
       type: String,
-      required:true,
-      enum:["BreakFast", "Lunch", "Dinner", "Desert", "Quick Snaks"],
-      default:"BreakFast"
+      required: true,
+      enum: ["Breakfast", "Lunch", "Dinner", "Dessert", "Quick Snack"],
+      default: "Breakfast",
     },
-
     photos: [{ type: String }],
 
     videoTutorial: { type: String },

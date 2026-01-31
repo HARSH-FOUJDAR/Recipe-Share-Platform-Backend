@@ -11,7 +11,7 @@ exports.createRecipe = async (req, res) => {
       servings,
       photos,
       videoTutorial,
-      category
+      category,
     } = req.body;
 
     if (
@@ -94,6 +94,7 @@ exports.updateById = async (req, res) => {
       "photos",
       "servings",
       "videoTutorial",
+      "category"
     ];
     allowedFields.forEach((field) => {
       if (req.body[field] !== undefined) {
