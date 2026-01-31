@@ -50,8 +50,6 @@ exports.getFavrouits = async (req, res) => {
 exports.DeleteFav = async (req, res) => {
   try {
     const { id } = req.params; 
-
-    
     const deleted = await FavoriteModel.findByIdAndDelete(id); 
 
     if (!deleted) {
