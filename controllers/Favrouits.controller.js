@@ -30,40 +30,44 @@ exports.toggleFavrouits = async (req, res) => {
   }
 };
 
+
 exports.getFavrouits = async (req, res) => {
   try {
     const userId = req.user.id;
-    const favrouits = await FavoriteModel.find({
-      user: userId,
-    }).populate("recipe");
+    const favrouits = await FavoriteModel.find({ user: userId }).populate("recipe");
+
+    const formattedData = favrouits.map((f) => ({
+      ...f.recipe._doc, // Recipe details
+      _id: f.recipe._id, // Recipe ID for navigation
+      favDocId: f._id    // Yeh wali ID delete ke liye use hogi
+    }));
 
     res.status(200).json({
-      favorites: favrouits.map((f) => f.recipe),
+      favorites: formattedData,
       message: "Favorites fetched successfully",
     });
   } catch (err) {
-    console.error("Server error", err);
     res.status(500).json({ message: "Server error" });
   }
 };
 
 exports.DeleteFav = async (req, res) => {
   try {
-    const { id } = req.params; 
-    const deleted = await FavoriteModel.findByIdAndDelete(id); 
+    const { id } = req.params; // Recipe ID aa rahi hai
+    const userId = req.user.id;
+
+
+    const deleted = await FavoriteModel.findOneAndDelete({ 
+      user: userId, 
+      recipe: id 
+    });
 
     if (!deleted) {
-      return res.status(404).json({ 
-        message: "Favorites not Found",
-      });
+      return res.status(404).json({ message: "Favorite not found" });
     }
 
-    res.status(200).json({
-      message: "Recipe Deleted Successfully",
-    });
+    res.status(200).json({ message: "Deleted successfully" });
   } catch (err) {
-    res.status(500).json({
-      message: "Server error",
-    });
+    res.status(500).json({ message: "Server error" });
   }
 };
