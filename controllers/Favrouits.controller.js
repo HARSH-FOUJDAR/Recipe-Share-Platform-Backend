@@ -49,8 +49,17 @@ exports.getFavrouits = async (req, res) => {
 
 exports.DeleteFav = async (req, res) => {
   try {
-    await req.favorites.deleteOne();
-    res.json({ message: "Recipe deletd SuccessFully" });
+    const { id } = req.params;
+
+    const deleted = await req.FavoriteModel.findByIdAndDelete(id);
+    if (!deleted) {
+      return res.status(400).json({
+        message: "Favrouits not Found ",
+      });
+    }
+    re.status(200).json({
+      message: "Recipe Deled Successfully",
+    });
   } catch (err) {
     res.status(500).json({
       message: "Server error",
