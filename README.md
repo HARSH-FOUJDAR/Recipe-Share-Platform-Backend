@@ -1,23 +1,30 @@
-RecipeNest – Full-Stack Recipe Sharing Platform RecipeNest ek professional MERN stack application hai jo users ko recipes share karne, discover karne, chefs ko follow karne aur meal planning karne ki suvidha deta hai. Ise coding assessment ke guidelines ke mutabiq develop kiya gaya hai.
+RecipeNest – Full-Stack Recipe Sharing Platform
+RecipeNest is a professional MERN stack application that allows users to share and discover recipes, follow chefs, and plan meals. It was developed according to the coding assessment guidelines.
 
 Features Implemented
+1. Recipe Management & Discovery
+Share Recipes: Users can add titles, ingredients, step-by-step instructions, and servings.
 
-Recipe Management & Discovery Share Recipes: Users title, ingredients, step-by-step instructions, aur servings add kar sakte hain.
-Media Integration: Photos aur YouTube video tutorials support.
+Media Integration: Supports photos and YouTube video tutorials.
 
-Advanced Search: Ingredients, cuisine, aur meal type ke basis par filter karne ki suvidha.
+Advanced Search: Filter recipes based on ingredients, cuisine, and meal type.
 
-Ratings & Reviews: 1-5 star star rating aur detailed comments system.
+Ratings & Reviews: 1-5 star rating and detailed comments system.
 
-User & Social Features User Profiles: Personalized dashboard jahan submitted recipes aur favorites manage hote hain.
-Follow System: Naye chefs ko follow aur unfollow karne ka real-time system.
+2. User & Social Features
+User Profiles: Personalized dashboard where users can manage their submitted recipes and favorites.
 
-Favorites: Pasandida recipes ko save karne ke liye wishlist feature.
+Follow System: Real-time system to follow and unfollow other chefs.
 
-Meal Planning & Shopping List Meal Planner: Weekly meal planning tool.
-Auto-Generated Shopping List: Selected recipes ke ingredients ki automatically list generate hoti hai jise print kiya ja sakta hai.
+Favorites: Wishlist feature to save favorite recipes.
 
-Tech Stack Frontend: React.js, TailwindCSS, Framer Motion (Animations), Lucide React (Icons).
+3. Meal Planning & Shopping List
+Meal Planner: Weekly meal planning tool.
+
+Auto-Generated Shopping List: Automatically generates a shopping list of ingredients from selected recipes, which can be printed.
+
+Tech Stack
+Frontend: React.js, TailwindCSS, Framer Motion (Animations), Lucide React (Icons).
 
 Backend: Node.js, Express.js.
 
@@ -27,13 +34,18 @@ Auth: JSON Web Tokens (JWT) & BcryptJS.
 
 Deployment: * Frontend: Netlify / Vercel.
 
-Backend: Render.
-
-Project Structure Plaintext ├── backend/ │ ├── controllers/ # Logic for Recipes, Users, Follows, Favs │ ├── models/ # Mongoose Schemas (User.model, Recipe.model, etc.) │ ├── routes/ # Express Endpoints │ └── middleware/ # Authentication (JWT) & Error Handling ├── frontend/ │ ├── src/ │ │ ├── components/ # Reusable UI (Navbar, RecipeCard, Loader) │ │ ├── pages/ # Main Views (Home, Profile, MealPlanner) │ │ └── App.js # React Router setup └── README.md ⚙️ Setup & Installation
-
-Clone the project:
-Bash cd recipe-nest 2. Backend Setup:
-
-Bash cd backend npm install npm start 3. Frontend Setup:
-
-Bash cd frontend npm install npm start
+Backend: Render. Project Structure
+plain text
+├── backend/
+│ ├── controllers/ # Logic for Recipes, Users, Follows, Favs
+│ ├── models/ # Mongoose Schemas (User.model, Recipe.model, etc.)
+│ ├── routes/ # Express Endpoints
+│ └── middleware/ # Authentication (JWT) & Error Handling
+├── frontend/
+│ ├── src/
+│ │ ├── components/ # Reusable UI (Navbar, RecipeCard, Loader)
+│ │ ├── pages/ # Main Views (Home, Profile, MealPlanner)
+│ │ └── App.js # React Router setup
+└── README.md
+⚙️ Setup & Installation
+1. Clone the project:
